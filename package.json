@@ -1,6 +1,6 @@
 {
   "name": "funcle",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "'We have the output, you have the input' - the algorithmic jeopardy game",
   "main": "index.js",
   "dependencies": {},
