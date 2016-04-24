@@ -9,6 +9,12 @@ const levels = [
   require('./levels/even')
 ]
 
+if (process.argv[2] === '--reset') {
+  fs.unlinkSync('./savegame.json')
+  console.log('All savegame data has been cleared')
+  process.exit(0)
+}
+
 const hasSaveGame = fs.existsSync('./savegame.json')
 
 if (hasSaveGame) {
