@@ -1,8 +1,10 @@
+#!/usr/bin/env node
 'use strict'
 
 const readline = require('readline')
 const fs = require('fs')
 const vm = require('vm')
+const path = require('path')
 
 const levels = [
   require('./levels/odds'),
@@ -10,12 +12,12 @@ const levels = [
 ]
 
 if (process.argv[2] === '--reset') {
-  fs.unlinkSync('./savegame.json')
+  fs.unlinkSync(path.join(__dirname, 'savegame.json'))
   console.log('All savegame data has been cleared')
   process.exit(0)
 }
 
-const hasSaveGame = fs.existsSync('./savegame.json')
+const hasSaveGame = fs.existsSync(path.join(__dirname, 'savegame.json'))
 
 if (hasSaveGame) {
   const savegame = require('./savegame.json')
@@ -25,7 +27,7 @@ if (hasSaveGame) {
 }
 
 function onasked (levelIndex, sublevelIndex) {
-  fs.writeFileSync('./savegame.json', JSON.stringify({
+  fs.writeFileSync(path.join(__dirname, 'savegame.json'), JSON.stringify({
     level: levelIndex,
     sublevel: sublevelIndex
   }))
@@ -121,7 +123,6 @@ function onasked (levelIndex, sublevelIndex) {
 function ask (levelIndex, sublevelIndex, cb) {
   const level = levels[levelIndex]
   const sublevel = level.sublevels[sublevelIndex]
-
   const str = [
     `${level.name} - ${level.description}`,
     '',
@@ -132,9 +133,10 @@ function ask (levelIndex, sublevelIndex, cb) {
     str.push(`#${i}: ${level.sublevels[i].input} => ${level.sublevels[i].output}`)
   }
 
+  str.push(`\nThese are the hints for your algorithm. Write your algorithm in level${levelIndex}.js`)
+
   clearScreen()
 
-  str.push(`\nThese are the hints for your algorithm. Write your algorithm in level${levelIndex}.js`)
   console.log(str.join('\n'))
 
   prompt(`When you are ready, hit enter`, function () {
@@ -143,17 +145,17 @@ function ask (levelIndex, sublevelIndex, cb) {
 }
 
 function checkSublevel (levelIndex, sublevelIndex, cb) {
-  const filename = `./level${levelIndex}.js`
+  const filename = `level${levelIndex}.js`
   const level = levels[levelIndex]
 
-  if (!fs.existsSync(filename)) {
-    return cb(new Error(`${filename} does not exist`))
+  if (!fs.existsSync(`./${filename}`)) {
+    fs.writeFileSync(`./${filename}`, 'function answer (input) {\n  return null\n}\n')
   }
 
   const sandbox = {}
   const context = new vm.createContext(sandbox)
 
-  const source = fs.readFileSync(filename)
+  const source = fs.readFileSync(`./${filename}`)
   const answerScript = new vm.Script(source)
   answerScript.runInContext(context)
 

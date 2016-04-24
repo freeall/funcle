@@ -5,6 +5,9 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {},
+  "bin": {
+    "funcle": "index.js"
+  },
   "author": "Tobias Baunbæk Christensen <freeall@gmail.com>",
   "license": "MIT"
 }
