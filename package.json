@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "'We have the output, you have the input' - the algorithmic jeopardy game",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "terminal-kit": "^0.24.2"
+  },
   "devDependencies": {},
   "bin": {
     "funcle": "index.js"
